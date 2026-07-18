@@ -18,7 +18,15 @@ $options = [
 
 // Activer le SSL uniquement pour la connexion distante Aiven
 if (getenv('DB_HOST') && getenv('DB_HOST') !== 'localhost') {
-    $options[PDO::MYSQL_ATTR_SSL_CA] = __DIR__ . '/certs/aiven-ca.pem';
+    $cert_path = __DIR__ . '/certs/aiven-ca.pem';
+    
+    if (!is_readable($cert_path)) {
+        error_log("[Kin La Verte] Certificat SSL introuvable ou illisible : $cert_path");
+        http_response_code(500);
+        die("Erreur critique : Le certificat SSL de la base de données est introuvable. Veuillez contacter l'administrateur.");
+    }
+    
+    $options[PDO::MYSQL_ATTR_SSL_CA] = $cert_path;
     $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
 }
 
