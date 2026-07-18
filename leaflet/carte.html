@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Composant Cartographie Active - Kinshasa</title>
+    
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; }
+        #map { height: 650px; width: 100%; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; }
+        
+        /* Styles pour le formulaire de signalement  */
+        .popup-form { min-width: 200px; }
+        .popup-form label { display: block; margin: 5px 0 2px; font-weight: bold; font-size: 12px; }
+        .popup-form select, .popup-form input { width: 100%; padding: 5px; margin-bottom: 8px; box-sizing: border-box; }
+        .popup-form button { background: #27ae60; color: white; border: none; padding: 6px 10px; width: 100%; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .popup-form button:hover { background: #219653; }
+    </style>
+</head>
+<body>
+
+    <h2>Plateforme Environnementale Kinshasa - Cartographie </h2>
+    <div id="map"></div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script>
+        
+        
+        // 1. INITIALISATION DE LA CARTE (Kinshasa)
+       
+        var map = L.map('map').setView([-4.3224, 15.3070], 12);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        // Variable globale pour suivre la popup de signalement ouverte
+        var currentSignalementPopup;
+
+        
+        // 2. FONCTION DE GÉOLOCALISATION ACTIVE
+        
+        map.locate({setView: true, maxZoom: 14});
+
+        map.on('locationfound', function(e) {
+            // Marqueur de l'utilisateur actif
+            L.circleMarker(e.latlng, {
+                radius: 8, fillColor: '#3498db', color: '#fff', weight: 3, fillOpacity: 1
+            }).addTo(map).bindPopup("<b>Votre position actuelle</b>").openPopup();
+        });
+
+        map.on('locationerror', function() {
+            console.log("Géolocalisation refusée ou indisponible. Centrage par défaut.");
+        });
+
+        
+        // 3. AFFICHAGE DES SIGNALEMENTS (Simulation Flux API)
+        
+        //  brancher le code du back-end  ici pour remplir le tableau
+        var incidentsExistants = [
+            { lat: -4.31, lng: 15.32, type: "Décharge sauvage", severity: "Haute" }
+        ];
+
+        incidentsExistants.forEach(function(inc) {
+            L.marker([inc.lat, inc.lng]).addTo(map)
+             .bindPopup("<b>⚠️ Signalement : " + inc.type + "</b><br>Gravité : " + inc.severity);
+        });
+
+        
+        // 4. SIGNALEMENT FORMULAIRE
+      
+        map.on('click', function(e) {
+            var lat = e.latlng.lat.toFixed(6);
+            var lng = e.latlng.lng.toFixed(6);
+
+            // Création du formulaire HTML du popup
+            var formHtml = `
+                <div class="popup-form">
+                    <h3>Signaler un incident</h3>
+                    <p style="font-size:11px; color:#666;">Coordonnées : ${lat}, ${lng}</p>
+                    
+                    <label for="incident-type">Type d'incident :</label>
+                    <select id="incident-type">
+                        <option value="Décharge sauvage">Décharge sauvage</option>
+                        <option value="Inondation">Inondation / Caniveau bouché</option>
+                        <option value="Érosion">Érosion de terrain</option>
+                        <option value="Pollution Eau/Air">Pollution Eau ou Air</option>
+                    </select>
+
+                    <label for="incident-severity">Gravité :</label>
+                    <select id="incident-severity">
+                        <option value="Faible">Faible</option>
+                        <option value="Moyenne">Moyenne</option>
+                        <option value="Haute">Haute</option>
+                        <option value="Critique">Critique</option>
+                    </select>
+
+                    <button onclick="soumettreSignalement(${lat}, ${lng})">Valider le signalement</button>
+                </div>
+            `;
+
+            // ouverture du popup à l'endroit cliqué
+            currentSignalementPopup = L.popup()
+                .setLatLng(e.latlng)
+                .setContent(formHtml)
+                .openOn(map);
+        });
+
+        
+        // 5. PASSERELLE VERS LE DEVELOPPEUR BACKEND
+        
+        function soumettreSignalement(lat, lng) {
+            // Récupération des données saisies par l'utilisateur
+            var type = document.getElementById('incident-type').value;
+            var severity = document.getElementById('incident-severity').value;
+
+            // 1. On crée l'objet de données propre
+            var donneesSignalement = {
+                latitude: lat,
+                longitude: lng,
+                type_incident: type,
+                gravite: severity,
+                date: new Date().toISOString()
+            };
+
+            // 2. Cartographie Active pour l'utilisateur
+            L.marker([lat, lng]).addTo(map)
+                .bindPopup(`<b>⚠️ ${type} (Nouveau)</b><br>Gravité : ${severity}<br><small>En cours de synchronisation...</small>`)
+                .openPopup();
+
+            // Fermer la popup de saisie
+            map.closePopup(currentSignalementPopup);
+
+            // 3. PASSAGE DE RELAIS : Back-end
+            console.log("DONNÉES PRÊTES POUR L'API BACKEND :", donneesSignalement);
+            
+            
+            
+            alert("Merci ! Votre signalement a été capturé par la carte aux coordonnées (" + lat + ", " + lng + ").");
+        }
+
+    </script>
+</body>
+</html>
