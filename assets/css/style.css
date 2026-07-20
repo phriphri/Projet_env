@@ -81,7 +81,7 @@ header {
     border-bottom: 1px solid var(--gray-100);
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1100; /* Doit être supérieur aux couches Leaflet (~1000) */
 }
 
 .logo {
@@ -806,7 +806,7 @@ tbody tr:hover {
         height: 56px;
         position: sticky;
         top: 0;
-        z-index: 200;
+        z-index: 1200; /* Au-dessus de Leaflet (1000) et du menu nav (1199) */
     }
 
     .hamburger {
@@ -825,7 +825,7 @@ tbody tr:hover {
         overflow-y: auto;
         transform: translateX(-100%);
         transition: transform 0.3s ease;
-        z-index: 199;
+        z-index: 1199; /* Au-dessus de Leaflet (1000), sous le header (1200) */
         box-shadow: 4px 0 20px rgba(0,0,0,0.08);
     }
 
@@ -868,6 +868,13 @@ tbody tr:hover {
     /* ── Main ──────────────────────────────────────────────────── */
     main {
         padding: 1.25rem 1rem 2rem;
+    }
+
+    /* ── Carte interactive ─────────────────────────────────────── */
+    #carte-interactive {
+        height: 55vh !important;
+        min-height: 280px;
+        max-height: 450px;
     }
 
     /* ── Typographie ───────────────────────────────────────────── */
