@@ -155,6 +155,10 @@ $_user_role = $_SESSION['user_role'] ?? '';
         nav.classList.remove('open');
         btn.setAttribute('aria-expanded', 'false');
         document.body.style.overflow = '';
+        document.body.classList.remove('menu-open');
+        if (typeof map !== 'undefined' && map.invalidateSize) {
+            setTimeout(function() { map.invalidateSize(); }, 350);
+        }
     }
 
     btn.addEventListener('click', function() {
@@ -162,6 +166,10 @@ $_user_role = $_SESSION['user_role'] ?? '';
         btn.classList.toggle('open', isOpen);
         btn.setAttribute('aria-expanded', String(isOpen));
         document.body.style.overflow = isOpen ? 'hidden' : '';
+        document.body.classList.toggle('menu-open', isOpen);
+        if (typeof map !== 'undefined' && map.invalidateSize) {
+            setTimeout(function() { map.invalidateSize(); }, 350);
+        }
     });
 
     // Fermer au clic sur un lien

@@ -826,6 +826,7 @@ tbody tr:hover {
         left: 0;
         right: 0;
         bottom: 0;
+        height: calc(100vh - 56px); /* Fixe la hauteur pour éviter le débordement vertical */
         background: var(--white);
         border-top: 1px solid var(--gray-100);
         padding: 1.5rem 1.25rem 2rem;
@@ -834,6 +835,12 @@ tbody tr:hover {
         transition: transform 0.3s ease;
         z-index: 1199; /* Au-dessus de Leaflet (1000), sous le header (1200) */
         box-shadow: 4px 0 20px rgba(0,0,0,0.08);
+    }
+
+    /* Masquer la carte Leaflet lorsque le menu est ouvert pour éviter qu'elle passe au-dessus ou perturbe le scroll */
+    body.menu-open #carte-interactive {
+        visibility: hidden;
+        pointer-events: none;
     }
 
     nav.open {
