@@ -831,6 +831,7 @@ tbody tr:hover {
         border-top: 1px solid var(--gray-100);
         padding: 1.5rem 1.25rem 2rem;
         overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
         transform: translateX(-100%);
         transition: transform 0.3s ease;
         z-index: 1199; /* Au-dessus de Leaflet (1000), sous le header (1200) */
@@ -838,9 +839,8 @@ tbody tr:hover {
     }
 
     /* Masquer la carte Leaflet lorsque le menu est ouvert pour éviter qu'elle passe au-dessus ou perturbe le scroll */
-    body.menu-open #carte-interactive {
-        visibility: hidden;
-        pointer-events: none;
+    body.menu-open .carte-wrapper {
+        display: none !important;
     }
 
     nav.open {
