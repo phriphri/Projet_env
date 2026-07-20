@@ -185,6 +185,23 @@ include 'includes/header.php';
     color: var(--gray-400);
     margin-bottom: 0.75rem;
 }
+
+@media (max-width: 600px) {
+    .edu-item {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    .edu-item-right {
+        margin-top: 1rem;
+        align-items: flex-start !important;
+    }
+    .edu-item-right > div,
+    .edu-item-right > button,
+    .edu-item-right > a {
+        width: 100% !important;
+        max-width: 250px;
+    }
+}
 </style>
 
 <div class="edu-wrap">
