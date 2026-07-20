@@ -16,15 +16,29 @@ include 'includes/header.php';
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
 <style>
-    #carte-interactive { height: 600px; width: 100%; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); border: 2px solid var(--primary-color); margin-bottom: 2rem; }
-    
+    /* ── Carte interactive ──────────────────────────────────────── */
+    .carte-wrapper {
+        width: 100%;
+        overflow: hidden; /* empêche tout débordement horizontal */
+        margin-bottom: 2rem;
+    }
+
+    #carte-interactive {
+        height: 600px;
+        width: 100%;
+        border-radius: 12px;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        border: 2px solid var(--primary-color);
+        display: block; /* évite l'espace blanc sous l'élément (inline par défaut) */
+    }
+
     .popup-form { min-width: 220px; font-family: inherit; }
     .popup-form h3 { margin: 0 0 10px 0; color: var(--primary-color); font-size: 1.1rem; }
     .popup-form label { display: block; margin: 8px 0 3px; font-weight: bold; font-size: 0.85rem; color: #555; }
     .popup-form select, .popup-form input, .popup-form textarea { width: 100%; padding: 6px; margin-bottom: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px; font-family: inherit; }
     .popup-form button { background: var(--secondary-color); color: white; border: none; padding: 8px 10px; width: 100%; border-radius: 4px; cursor: pointer; font-weight: bold; margin-top: 10px; transition: 0.3s; }
     .popup-form button:hover { background: #27ae60; }
-    
+
     .leaflet-popup-content h4 { margin: 0 0 6px 0; color: var(--primary-color); }
     .leaflet-popup-content .pop-label { font-weight: bold; color: #555; font-size: 0.8rem; text-transform: uppercase; margin-top: 6px; display: block; }
     .pop-badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 0.82rem; font-weight: bold; color: white; margin-top: 4px; }
@@ -35,7 +49,9 @@ include 'includes/header.php';
     <p>Consultez les incidents signalés ou déclarez un nouveau problème en cliquant sur la carte.</p>
 </div>
 
-<div id="carte-interactive"></div>
+<div class="carte-wrapper">
+    <div id="carte-interactive"></div>
+</div>
 
 <script>
     var map = L.map('carte-interactive').setView([-4.3224, 15.3070], 12);
@@ -185,6 +201,24 @@ include 'includes/header.php';
             map.closePopup(popup_active);
         });
     }
+    // Après l'initialisation, forcer Leaflet à recalculer la taille réelle du conteneur
+    // (utile si la page est chargée pendant une transition CSS)
+    setTimeout(function() { map.invalidateSize(); }, 300);
+
+    // Notifier Leaflet à chaque fois que le menu hamburger change de taille
+    // afin qu'il recalcule les tuiles et les dimensions de la carte.
+    var hamburgerBtn = document.getElementById('hamburgerBtn');
+    if (hamburgerBtn) {
+        hamburgerBtn.addEventListener('click', function() {
+            // Délai pour attendre la fin de la transition CSS du menu (300ms)
+            setTimeout(function() { map.invalidateSize(); }, 350);
+        });
+    }
+
+    // Notifier aussi à chaque resize de la fenêtre
+    window.addEventListener('resize', function() {
+        map.invalidateSize();
+    });
 
 </script>
 

@@ -236,12 +236,12 @@ include 'includes/header.php';
 }
 </style>
 
-<div class="animated-section" style="max-width: 1000px; margin: 3rem auto; padding: 0 1.5rem;">
+<div class="animated-section" style="max-width: 1000px; margin: 3rem auto; padding: 0 1.5rem; box-sizing: border-box; width: 100%;">
     
     <!-- En-tête accrocheur mais sobre -->
     <div style="margin-bottom: 2.5rem;">
         <span class="badge-green">Plateforme Citoyenne & Étudiante</span>
-        <h1 style="color: var(--green-700); font-size: 2.5rem; margin: 0.5rem 0; font-weight: 800; letter-spacing: -0.5px;">Kin La Verte</h1>
+        <h1 style="color: var(--green-700); font-size: clamp(1.6rem, 5vw, 2.5rem); margin: 0.5rem 0; font-weight: 800; letter-spacing: -0.5px;">Kin La Verte</h1>
         <p style="font-size: 1.15rem; color: var(--gray-700); line-height: 1.5; max-width: 700px;">
             Suivi environnemental, cartographie des alertes et ressources éducatives pour la préservation écologique de Kinshasa.
         </p>
